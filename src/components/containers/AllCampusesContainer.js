@@ -7,10 +7,12 @@ If needed, it also defines the component's "connect" function.
 ================================================== */
 import Header from './Header';
 import { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { fetchAllCampusesThunk } from "../../store/thunks";
-import { AllCampusesView } from "../views";
+import PropTypes from "prop-types";
+import { fetchAllCampusesThunk, deleteCampusThunk } from "../../store/thunks";
+import AllCampusesView from "../views/AllCampusesView";
+import { withRouter } from "react-router-dom";
+
 
 class AllCampusesContainer extends Component {
   // Get all campuses data from back-end database
@@ -26,6 +28,7 @@ class AllCampusesContainer extends Component {
         <Header />
         <AllCampusesView
           allCampuses={this.props.allCampuses}
+          deleteCampus={this.props.deleteCampus}
         />
       </div>
     );
@@ -45,6 +48,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchAllCampuses: () => dispatch(fetchAllCampusesThunk()),
+    deleteCampus: (campusId) => dispatch(deleteCampusThunk(campusId)),
   };
 };
 
@@ -52,9 +56,10 @@ const mapDispatch = (dispatch) => {
 AllCampusesContainer.propTypes = {
   allCampuses: PropTypes.array.isRequired,
   fetchAllCampuses: PropTypes.func.isRequired,
+  deleteCampus: PropTypes.func.isRequired,
 };
 
 // Export store-connected container by default
 // AllCampusesContainer uses "connect" function to connect to Redux Store and to read values from the Store 
 // (and re-read the values when the Store State updates).
-export default connect(mapState, mapDispatch)(AllCampusesContainer);
+export default withRouter(connect(mapState, mapDispatch)(AllCampusesContainer));

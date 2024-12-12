@@ -13,6 +13,30 @@ export const fetchAllCampuses = (campuses) => {
   };
 };
 
+//Add Campus
+export const addCampus = (campus) => {
+  return {
+    type: at.ADD_CAMPUS,
+    payload: campus,
+  };
+};
+
+//Delete Campus
+export const deleteCampus = (campusId) => {
+  return {
+    type: at.DELETE_CAMPUS,
+    payload: campusId,
+  };
+};
+
+//Edit Campus
+export const editCampus = (campus) => {
+  return {
+    type: at.EDIT_CAMPUS,
+    payload: campus,
+  };
+};
+
 //Single Campus
 export const fetchCampus = (campus) => {
   return {
@@ -29,6 +53,7 @@ export const fetchAllStudents = (students) => {
   };
 };
 
+//Add Student
 export const addStudent = (student) => {
   return {
     type: at.ADD_STUDENT,
@@ -36,6 +61,7 @@ export const addStudent = (student) => {
   };
 };
 
+//Delete Student
 export const deleteStudent = (studentId) => {
   return {
     type: at.DELETE_STUDENT,
@@ -43,7 +69,7 @@ export const deleteStudent = (studentId) => {
   };
 };
 
-
+//Edit Student
 export const editStudent = (student) => {
   return {
     type: at.EDIT_STUDENT,

@@ -9,12 +9,7 @@ import Header from './Header';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
-
-import { 
-  fetchAllStudentsThunk,
-  deleteStudentThunk
-} from '../../store/thunks';
-
+import { fetchAllStudentsThunk, deleteStudentThunk } from '../../store/thunks';
 import AllStudentsView from '../views/AllStudentsView';
 
 class AllStudentsContainer extends Component {
@@ -45,6 +40,7 @@ const mapState = (state) => {
     allStudents: state.allStudents,  // Get the State object from Reducer "allStudents"
   };
 };
+
 // 2. The "mapDispatch" argument is used to dispatch Action (Redux Thunk) to Redux Store.
 // The "mapDispatch" calls the specific Thunk to dispatch its action. The "dispatch" is a function of Redux Store.
 const mapDispatch = (dispatch) => {
