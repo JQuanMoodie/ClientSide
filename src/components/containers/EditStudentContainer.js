@@ -11,8 +11,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import EditStudentView from '../views/EditStudentView';
-import { editStudentThunk } from '../../store/thunks';
-import { fetchStudentThunk } from "../../store/thunks";
+import { editStudentThunk, fetchStudentThunk, fetchAllCampusesThunk,  } from '../../store/thunks';
 
 class EditStudentContainer extends Component {
     // Initialize state
@@ -23,7 +22,8 @@ class EditStudentContainer extends Component {
       lastname: "",
       email: "",
       gpa: "", 
-      campusId: "", 
+      campusId: "",
+      picture: "", 
       redirect: false, 
       redirectId: ""
     };
@@ -32,13 +32,15 @@ class EditStudentContainer extends Component {
   componentDidMount() {
     //getting student ID from url
     this.props.fetchStudent(this.props.match.params.id);
+    this.props.fetchAllCampuses();
   }
 
   componentDidUpdate(prevProps) {
     // Update state with fetched student data once it's available
     if (prevProps.student !== this.props.student) {
-      const { firstname, lastname, email, gpa, campusId } = this.props.student;
-      this.setState({ firstname, lastname, email, gpa, campusId });
+      console.log("Fetched student:", this.props.student);
+      const { firstname, lastname, email, gpa, campusId, picture } = this.props.student;
+      this.setState({ firstname, lastname, email, gpa, campusId, picture });
     }
   }
   
@@ -53,16 +55,30 @@ class EditStudentContainer extends Component {
   handleSubmit = async event => {
     event.preventDefault();  // Prevent browser reload/refresh after submit.
     
-    if (this.state.firstname === ""){
-      alert("Please Input The Student's First Name");
+    if (this.state.firstname === "" || this.state.lastname === "" || this.state.email === ""){
+      alert("Please Fill in all required fields");
       return;
     }
-    if (this.state.lastname === ""){
-      alert("Please Input The Student's Last Name");
+
+    if (this.state.gpa < 0 || this.state.gpa > 4){
+      alert("The Student's GPA must be between 0.0 and 4.0");
       return;
     }
-    if (this.state.email === ""){
-      alert("Please Input The Student's E-Mail Address");
+
+    var exists = false;
+    for (var i = 0; i < this.props.allCampuses.length; i++){
+      if (this.props.allCampuses[i].id === Number(this.state.campusId)){
+        exists = true;
+        break;
+      }
+    }
+
+    if (this.state.campusId === "" || this.state.campusId === null){
+      exists = true;
+    }
+
+    if (!exists){
+      alert("Please Enter a Valid Campus ID");
       return;
     }
 
@@ -70,9 +86,10 @@ class EditStudentContainer extends Component {
         id: this.props.match.params.id,
         firstname: this.state.firstname,
         lastname: this.state.lastname,
-        campusId: this.state.campusId,
+        campusId: this.state.campusId ? Number(this.state.campusId) : null,
+        picture: this.state.picture,
         email: this.state.email,
-        gpa: this.state.gpa
+        gpa: this.state.gpa ? Number(this.state.gpa) : null
     };
     
     // edit student in back-end database
@@ -115,6 +132,7 @@ class EditStudentContainer extends Component {
 //Map Redux state to props
 const mapState = (state) => ({
     student: state.student,
+    allCampuses: state.allCampuses,
 });
 
 // The following input argument is passed to the "connect" function used by "NewStudentContainer" component to connect to Redux Store.
@@ -124,6 +142,7 @@ const mapDispatch = (dispatch) => {
     return({
         editStudent: (student) => dispatch(editStudentThunk(student)),
         fetchStudent: (id) => dispatch(fetchStudentThunk(id)),
+        fetchAllCampuses: () => dispatch(fetchAllCampusesThunk()),
     })
 }
 

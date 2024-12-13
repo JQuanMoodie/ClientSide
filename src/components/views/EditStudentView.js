@@ -61,13 +61,18 @@ const EditStudentView = (props) => {
             <br/>
             <br/>
 
+            <label style={{color:'#11153e', fontWeight: 'bold'}}>Image URL: </label>
+            <input type="text" name="picture" value={student.picture} onChange={(e) => handleChange(e)} />
+            <br/>
+            <br/>
+
             <label style={{color:'#11153e', fontWeight: 'bold'}}>*E-Mail Address: </label>
             <input type="text" name="email" value={student.email} onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>Campus Id: </label>
-            <input type="text" name="campusId" value={student.campusID} onChange={(e) => handleChange(e)} />
+            <input type="text" name="campusId" value={student.campusId} onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
