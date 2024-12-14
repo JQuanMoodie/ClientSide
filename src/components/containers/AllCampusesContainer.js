@@ -50,7 +50,7 @@ const mapDispatch = (dispatch) => {
     fetchAllCampuses: () => dispatch(fetchAllCampusesThunk()),
     deleteCampus: (campusId) => dispatch(deleteCampusThunk(campusId)),
   };
-};
+}; 
 
 // Type check props;
 AllCampusesContainer.propTypes = {

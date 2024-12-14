@@ -8,7 +8,7 @@ If needed, it also defines the component's "connect" function.
 import Header from './Header';
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchCampusThunk } from "../../store/thunks";
+import { fetchCampusThunk, fetchStudentThunk, editStudentThunk } from "../../store/thunks";
 
 import { CampusView } from "../views";
 
@@ -19,12 +19,25 @@ class CampusContainer extends Component {
     this.props.fetchCampus(this.props.match.params.id);
   }
 
+  handleUnenroll = async (studentId) => {
+    // Fetch the student details
+    await this.props.fetchStudent(studentId);
+    // Update the student object to set campusId to null (unenrolled)
+    var updatedstudent = this.props.student;
+    updatedstudent.campusId = null;
+    // Use editStudentThunk to save changes
+    await this.props.editStudent(updatedstudent);
+    // Re-fetch the campus data to reflect the changes
+    this.props.fetchCampus(this.props.match.params.id);
+  };
+
   // Render a Campus view by passing campus data as props to the corresponding View component
   render() {
     return (
       <div>
         <Header />
-        <CampusView campus={this.props.campus} />
+        <CampusView campus={this.props.campus} 
+        handleUnenroll={this.handleUnenroll}/>
       </div>
     );
   }
@@ -35,6 +48,7 @@ class CampusContainer extends Component {
 // The "mapState" is called when the Store State changes, and it returns a data object of "campus".
 const mapState = (state) => {
   return {
+    student: state.student,
     campus: state.campus,  // Get the State object from Reducer "campus"
   };
 };
@@ -43,6 +57,8 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
+    fetchStudent: (id) => dispatch(fetchStudentThunk(id)),
+    editStudent: (student) => dispatch(editStudentThunk(student)),
   };
 };
 

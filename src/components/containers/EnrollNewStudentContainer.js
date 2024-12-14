@@ -1,5 +1,5 @@
 /*==================================================
-EditStudentContainer.js
+EnrollNewStudentContainer.js
 
 The Container component is responsible for stateful logic and data fetching, and
 passes data (if any) as props to the corresponding View component.
@@ -10,11 +10,11 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
-import EditStudentView from '../views/EditStudentView';
-import { editStudentThunk, fetchStudentThunk, fetchAllCampusesThunk,  } from '../../store/thunks';
+import EnrollNewStudentView from '../views/EnrollNewStudentView';
+import { addStudentThunk, fetchCampusThunk } from '../../store/thunks';
 
-class EditStudentContainer extends Component {
-    // Initialize state
+class EnrollNewStudentContainer extends Component {
+  // Initialize state
   constructor(props){
     super(props);
     this.state = {
@@ -25,25 +25,14 @@ class EditStudentContainer extends Component {
       campusId: "",
       picture: "", 
       redirect: false, 
-      redirectId: ""
+      redirectId: null
     };
   }
 
   componentDidMount() {
-    //getting student ID from url
-    this.props.fetchStudent(this.props.match.params.id);
-    this.props.fetchAllCampuses();
+    this.props.fetchCampus(this.props.match.params.id);
   }
 
-  componentDidUpdate(prevProps) {
-    // Update state with fetched student data once it's available
-    if (prevProps.student !== this.props.student) {
-      console.log("Fetched student:", this.props.student);
-      const { firstname, lastname, email, gpa, campusId, picture } = this.props.student;
-      this.setState({ firstname, lastname, email, gpa, campusId, picture });
-    }
-  }
-  
   // Capture input data when it is entered
   handleChange = event => {
     this.setState({
@@ -54,7 +43,8 @@ class EditStudentContainer extends Component {
   // Take action after user click the submit button
   handleSubmit = async event => {
     event.preventDefault();  // Prevent browser reload/refresh after submit.
-    
+    let campus = this.props.campus;
+
     if (this.state.firstname === "" || this.state.lastname === "" || this.state.email === ""){
       alert("Please Fill in all required fields");
       return;
@@ -62,23 +52,6 @@ class EditStudentContainer extends Component {
 
     if (this.state.gpa < 0 || this.state.gpa > 4){
       alert("The Student's GPA must be between 0.0 and 4.0");
-      return;
-    }
-
-    var exists = false;
-    for (var i = 0; i < this.props.allCampuses.length; i++){
-      if (this.props.allCampuses[i].id === Number(this.state.campusId)){
-        exists = true;
-        break;
-      }
-    }
-
-    if (this.state.campusId === "" || this.state.campusId === null){
-      exists = true;
-    }
-
-    if (!exists){
-      alert("Please Enter a Valid Campus ID");
       return;
     }
 
@@ -90,46 +63,50 @@ class EditStudentContainer extends Component {
     }
 
     let student = {
-        id: this.props.match.params.id,
         firstname: this.state.firstname,
         lastname: this.state.lastname,
-        campusId: this.state.campusId ? Number(this.state.campusId) : null,
+        campusId: campus.id,
         picture: url,
         email: this.state.email,
         gpa: this.state.gpa ? Number(this.state.gpa) : null
     };
     
-    // edit student in back-end database
-    var updatedStudent = await this.props.editStudent(student);
-    updatedStudent.id = student.id;
+    // Add new student in back-end database
+    await this.props.addStudent(student);
 
     // Update state, and trigger redirect to show the new student
     this.setState({
+      firstname: "", 
+      lastname: "",
+      email: "",
+      gpa: "", 
+      campusId: null,
+      picture: "", 
       redirect: true, 
-      redirectId: updatedStudent.id
+      redirectId: campus.id
     });
-  };
+  }
 
   // Unmount when the component is being removed from the DOM:
   componentWillUnmount() {
       this.setState({redirect: false, redirectId: null});
   }
 
-  // Render edit student input form
+  // Render new student input form
   render() {
-    // Redirect to edited student's page after submit
+    // Redirect back to campus's page after submit
     if(this.state.redirect) {
-      return (<Redirect to={`/student/${this.state.redirectId}`}/>)
+      return (<Redirect to={`/campus/${this.state.redirectId}`}/>)
     }
 
     // Display the input form via the corresponding View component
     return (
       <div>
         <Header />
-        <EditStudentView 
-            student={this.state}
-            handleChange = {this.handleChange} 
-            handleSubmit = {this.handleSubmit}      
+        <EnrollNewStudentView 
+          campus={this.props.campus}
+          handleChange = {this.handleChange} 
+          handleSubmit = {this.handleSubmit}      
         />
       </div>          
     );
@@ -138,8 +115,7 @@ class EditStudentContainer extends Component {
 
 //Map Redux state to props
 const mapState = (state) => ({
-    student: state.student,
-    allCampuses: state.allCampuses,
+  campus: state.campus,
 });
 
 // The following input argument is passed to the "connect" function used by "NewStudentContainer" component to connect to Redux Store.
@@ -147,13 +123,12 @@ const mapState = (state) => ({
 // The "mapDispatch" calls the specific Thunk to dispatch its action. The "dispatch" is a function of Redux Store.
 const mapDispatch = (dispatch) => {
     return({
-        editStudent: (student) => dispatch(editStudentThunk(student)),
-        fetchStudent: (id) => dispatch(fetchStudentThunk(id)),
-        fetchAllCampuses: () => dispatch(fetchAllCampusesThunk()),
+        addStudent: (student) => dispatch(addStudentThunk(student)),
+        fetchCampus: (id) => dispatch(fetchCampusThunk(id)),
     })
 }
 
 // Export store-connected container by default
 // NewStudentContainer uses "connect" function to connect to Redux Store and to read values from the Store 
 // (and re-read the values when the Store State updates).
-export default connect(mapState, mapDispatch)(EditStudentContainer);
+export default connect(mapState, mapDispatch)(EnrollNewStudentContainer);

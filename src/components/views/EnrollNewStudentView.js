@@ -1,5 +1,5 @@
 /*==================================================
-EditStudentView.js
+NewStudentView.js
 
 The Views component is responsible for rendering web page with data provided by the corresponding Container component.
 It constructs a React component to display the new student page.
@@ -20,7 +20,7 @@ const useStyles = makeStyles( () => ({
     flexGrow: 1,
     textAlign: 'left',
     textDecoration: 'none'
-  },
+  }, 
   customizeAppBar:{
     backgroundColor: '#11153e',
     shadows: ['none'],
@@ -34,50 +34,45 @@ const useStyles = makeStyles( () => ({
   },
 }));
 
-const EditStudentView = (props) => {
-  const {student, handleChange, handleSubmit } = props;
+const EnrollNewStudentView = (props) => {
+  const {campus, handleChange, handleSubmit } = props;
   const classes = useStyles();
 
-  // Render a Edit Student view with an input form
+  // Render a New Student view with an input form
   return (
     <div>
-      <h1>Edit Student</h1>
+      <h1>Enroll A New Student Into {campus?.name || "Loading..."}</h1>;
 
       <div className={classes.root}>
         <div className={classes.formContainer}>
           <div className={classes.formTitle}>
             <Typography style={{fontWeight: 'bold', fontFamily: 'Courier, sans-serif', fontSize: '20px', color: '#11153e'}}>
-              Edit Student
+              Add a Student
             </Typography>
           </div>
           <form style={{textAlign: 'center'}} onSubmit={(e) => handleSubmit(e)}>
             <label style= {{color:'#11153e', fontWeight: 'bold'}}>*First Name: </label>
-            <input type="text" name="firstname" value={student.firstname} onChange ={(e) => handleChange(e)} />
+            <input type="text" name="firstname" onChange ={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>*Last Name: </label>
-            <input type="text" name="lastname" value={student.lastname} onChange={(e) => handleChange(e)} />
+            <input type="text" name="lastname" onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>Image URL: </label>
-            <input type="text" name="picture" value={student.picture} onChange={(e) => handleChange(e)} />
+            <input type="text" name="picture" onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>*E-Mail Address: </label>
-            <input type="email" name="email" value={student.email} onChange={(e) => handleChange(e)} />
-            <br/>
-            <br/>
-
-            <label style={{color:'#11153e', fontWeight: 'bold'}}>Campus Id: </label>
-            <input type="number" name="campusId" value={student.campusId} onChange={(e) => handleChange(e)} />
+            <input type="email" name="email" onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
             <label style={{color:'#11153e', fontWeight: 'bold'}}>GPA: </label>
-            <input type="number" name="gpa" min="0" max="4" step="0.01" value={student.gpa} onChange={(e) => handleChange(e)} />
+            <input type="number" name="gpa" min="0" max="4" step="0.01" onChange={(e) => handleChange(e)} />
             <br/>
             <br/>
 
@@ -95,4 +90,4 @@ const EditStudentView = (props) => {
   )
 }
 
-export default EditStudentView;
+export default EnrollNewStudentView;

@@ -21,6 +21,7 @@ class EditCampusContainer extends Component {
     this.state = {
         name: "",
         address: "",
+        picture: "",
         description: "",
         redirect: false, 
         redirectId: ""
@@ -35,8 +36,8 @@ class EditCampusContainer extends Component {
   componentDidUpdate(prevProps) {
     // Update state with fetched student data once it's available
     if (prevProps.campus !== this.props.campus) {
-      const { name, address, description } = this.props.campus;
-      this.setState({ name, address, description });
+      const { name, address, picture, description } = this.props.campus;
+      this.setState({ name, address, picture, description });
     }
   }
 
@@ -60,10 +61,18 @@ class EditCampusContainer extends Component {
       return;
     }
 
+    var url;
+    if (this.state.picture === null || this.state.picture === ""){
+      url = "https://picsum.photos/id/234/200";
+    } else {
+      url = this.state.picture;
+    }
+
     let campus = {
         id: this.props.match.params.id,
         name: this.state.name,
         address: this.state.address,
+        picture: url,
         description: this.state.description
     };
     

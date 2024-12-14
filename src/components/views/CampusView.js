@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 // Take in props data to construct the component
 const CampusView = (props) => {
-  const {campus} = props;
+  const { campus, handleUnenroll } = props;
   
   var studentList = <h4>Students Currently Enrolled</h4>;
   if (campus.students.length === 0){
@@ -30,10 +30,14 @@ const CampusView = (props) => {
         <div key={student.id}>
           <Link to={`/student/${student.id}`}>
             <h2>{name}</h2>
-          </Link>             
+          </Link>
+          <button onClick={() => handleUnenroll(student.id)}>Unenroll</button>             
         </div>
         );
       })}
+      <Link to={`/newstudent/campus/${campus.id}`}>
+        <button>Add New Student</button>
+      </Link>
     </div>
   );
 };

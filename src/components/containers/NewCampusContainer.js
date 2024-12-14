@@ -20,6 +20,7 @@ class NewCampusContainer extends Component {
     this.state = {
         name: "",
         address: "",
+        picture: "",
         description: "",
         redirect: false, 
         redirectId: null
@@ -46,9 +47,17 @@ class NewCampusContainer extends Component {
       return;
     }
 
+    var url;
+    if (this.state.picture === null || this.state.picture === ""){
+      url = "https://picsum.photos/id/234/200";
+    } else {
+      url = this.state.picture;
+    }
+
     let campus = {
         name: this.state.name,
         address: this.state.address,
+        picture: url,
         description: this.state.description
     };
     
@@ -59,6 +68,7 @@ class NewCampusContainer extends Component {
     this.setState({
         name: "",
         address: "",
+        picture: "",
         description: "",
         redirect: true, 
         redirectId: newCampus.id
